@@ -1,0 +1,49 @@
+@baseUrl = http://localhost:3000
+# Khi deploy xong, đổi dòng trên thành link Render của bạn:
+# @baseUrl = https://smart-apartment-backend.onrender.com
+
+### 1. Kiểm tra trạng thái Server
+GET {{baseUrl}}/
+
+### 2. Đăng nhập cư dân A-1204
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "cudan1204",
+  "password": "123456"
+}
+
+### 3. Giả lập ESP32 gửi dữ liệu cảm biến (có kích hoạt cảnh báo Gas & Nhiệt độ)
+POST {{baseUrl}}/api/sensors
+Content-Type: application/json
+
+{
+  "apartmentId": "A-1204",
+  "temperature": 42.5,
+  "humidity": 55.0,
+  "gasPpm": 650,
+  "gasAlert": true,
+  "tempAlert": true
+}
+
+### 4. Mobile App đọc thông số cảm biến
+GET {{baseUrl}}/api/sensors/A-1204
+
+### 5. Mobile App bật đèn phòng khách & mở khóa cửa
+PUT {{baseUrl}}/api/devices/A-1204
+Content-Type: application/json
+
+{
+  "livingRoomLight": true,
+  "doorUnlocked": true
+}
+
+### 6. ESP32 đọc trạng thái thiết bị
+GET {{baseUrl}}/api/devices/A-1204
+
+### 7. Mobile App xem lịch sử cảnh báo
+GET {{baseUrl}}/api/alerts/A-1204
+
+### 8. Mobile App xóa lịch sử cảnh báo
+DELETE {{baseUrl}}/api/alerts/A-1204
